@@ -138,7 +138,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public AuthenticationResponse login(LoginRequest request, HttpServletRequest servletRequest, boolean adminLogin) {
-		// System.out.println("====> " + request.getUsername());
 
 		String username = inputValidationSER.sanitizeInput(request.getUsername());
 		String password = request.getPassword();

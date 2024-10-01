@@ -5,6 +5,8 @@ import java.security.Principal;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -286,22 +288,31 @@ public class UserController {
 	)
 	public ResponseEntity<MyApiResponse> forgotPassword(@RequestParam @Valid String username) throws Exception {
 		return ResponseEntity.ok(userSER.getURIforgetPassword(username));
-		
 	}
 	
 	
-	@GetMapping("/recovery")
+	@GetMapping("/password-reset")
 	@Operation(
-		 summary = "This is an URL will be sent to user's mail. This method will verify for resetting password.",
+		 summary = "Verify reset token and show password reset form",
 		 responses = {
-			 @ApiResponse( responseCode = "200", description = "A recoveried code will be sent to user's mail.",
-							content = @Content( mediaType = "application/json", schema = @Schema(implementation = MyApiResponse.class))),
-			 @ApiResponse( responseCode = "404", description = "Email not found.",
-							content = @Content( mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+			 @ApiResponse(responseCode = "200", description = "Token is valid, show password reset form", 
+							content = @Content(mediaType = "text/html")),
+			 @ApiResponse(responseCode = "404", description = "Invalid or expired token", 
+							content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
 		 }
 	)
-	public ResponseEntity<MyApiResponse> checkCode(@RequestParam @Valid String code) {
-		return ResponseEntity.ok(userSER.checkReocveryCode(code.replace(' ', '+')));
+	public ResponseEntity<?> showPasswordResetForm(@RequestParam @Valid String code) {
+		try {
+			userSER.checkReocveryCode(code.replace(' ', '+'));
+			// If valid, return HTML page with password reset form
+			String htmlContent = generatePasswordResetHtml(code);
+			return ResponseEntity.ok()
+				.contentType(MediaType.TEXT_HTML)
+				.body(htmlContent);
+		} catch (MyNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ErrorResponse("Invalid or expired token"));
+		}
 	}
 	
 	
@@ -317,5 +328,30 @@ public class UserController {
 	)
 	public ResponseEntity<MyApiResponse> setPassword(@RequestParam @Valid String code, @RequestBody @Valid NewPasswordRequest password) {
 		return ResponseEntity.ok(userSER.setNewPassword(code.replace(' ', '+'), password.getPassword()));
+	}
+	
+	
+	private String generatePasswordResetHtml(String code) {
+		return "<html><body>"
+			+ "<h2>Reset Your Password</h2>"
+			+ "<form id='resetForm'>"
+			+ "<input type='password' id='password' required>"
+			+ "<input type='hidden' id='code' value='" + code + "'>"
+			+ "<button type='submit'>Reset Password</button>"
+			+ "</form>"
+			+ "<script>"
+			+ "document.getElementById('resetForm').onsubmit = function(e) {"
+			+ "    e.preventDefault();"
+			+ "    fetch('/api/user/recovery?code=' + document.getElementById('code').value, {"
+			+ "        method: 'POST',"
+			+ "        headers: {'Content-Type': 'application/json'},"
+			+ "        body: JSON.stringify({password: document.getElementById('password').value})"
+			+ "    })"
+			+ "    .then(response => response.json())"
+			+ "    .then(data => alert(data.message))"
+			+ "    .catch(error => alert('Error: ' + error));"
+			+ "}"
+			+ "</script>"
+			+ "</body></html>";
 	}
 }

@@ -255,7 +255,6 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			return null;
 		}
-
 	}
 
 	@Override
@@ -263,6 +262,8 @@ public class UserServiceImpl implements UserService {
 		JSONObject decryption = this.checkToken(code);
 		if (decryption == null)
 			throw new MyNotFoundException("URL Not Found");
+
+			
 		return new MyApiResponse("Token is valid");
 	}
 

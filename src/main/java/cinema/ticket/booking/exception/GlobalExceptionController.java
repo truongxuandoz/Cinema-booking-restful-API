@@ -16,60 +16,70 @@ import io.jsonwebtoken.ExpiredJwtException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class GlobalExceptionController extends ResponseEntityExceptionHandler {
-	
-	@ExceptionHandler({NullPointerException.class})
+
+	@ExceptionHandler({ NullPointerException.class })
 	@ResponseBody
-    public ResponseEntity<ErrorResponse> nullPointException(Exception e) {
-		ErrorResponse error = new ErrorResponse("Got NULL variable in field(s). Please check them again.", HttpStatus.BAD_REQUEST);
-		return new ResponseEntity< >(error, HttpStatus.BAD_REQUEST);
-    }
-	
+	public ResponseEntity<ErrorResponse> nullPointException(Exception e) {
+		ErrorResponse error = new ErrorResponse("Got NULL variable in field(s). Please check them again.",
+				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(MyAccessDeniedException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> accessDenied(MyAccessDeniedException exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
-		return new ResponseEntity< >(error, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 	}
-	
+
 	@ExceptionHandler(MyLockedException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> lockedException(MyLockedException exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.LOCKED);
-		return new ResponseEntity< >(error, HttpStatus.LOCKED);
+		return new ResponseEntity<>(error, HttpStatus.LOCKED);
 	}
-	
+
 	@ExceptionHandler(MyBadRequestException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> badRequest(MyBadRequestException exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST);
-		return new ResponseEntity< >(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(MyNotFoundException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> notFound(MyNotFoundException exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
-		return new ResponseEntity< >(error, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(MyConflictExecption.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> conFlict(MyConflictExecption exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.CONFLICT);
-		return new ResponseEntity< >(error, HttpStatus.CONFLICT);
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 
-	@ExceptionHandler({MyServerErrorException.class})
+	@ExceptionHandler({ MyServerErrorException.class })
 	@ResponseBody
-    public ResponseEntity<ErrorResponse> internalServerError(Exception exception) {
+	public ResponseEntity<ErrorResponse> internalServerError(Exception exception) {
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		return new ResponseEntity< >(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-	
-	@ExceptionHandler(value = {ExpiredJwtException.class})
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(value = { ExpiredJwtException.class })
 	public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException exception, WebRequest request) {
-//		String requestUri = ((ServletWebRequest)request).getRequest().getRequestURI().toString();
+		// String requestUri =
+		// ((ServletWebRequest)request).getRequest().getRequestURI().toString();
 		ErrorResponse error = new ErrorResponse(exception.getMessage(), HttpStatus.CONFLICT);
-		return new ResponseEntity< >(error, HttpStatus.CONFLICT);
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseBody
+	public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
+		ErrorResponse error = new ErrorResponse("An unexpected error occurred: " + ex.getMessage(),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
