@@ -25,10 +25,12 @@ cinema\ticket\booking\response\ExceptionResponse.class
 cinema\ticket\booking\repository\UserTempRepository.class
 cinema\ticket\booking\service\impl\BookingServiceImpl.class
 cinema\ticket\booking\request\AddCommentRequest.class
+cinema\ticket\booking\service\impl\MovieApiServiceImpl.class
 cinema\ticket\booking\model\enumModel\ESeatStatus.class
 cinema\ticket\booking\response\SeatsResponse.class
 cinema\ticket\booking\model\enumModel\ERole.class
 cinema\ticket\booking\request\PaymentRequest.class
+cinema\ticket\booking\controller\CustomErrorController.class
 cinema\ticket\booking\model\Genre.class
 cinema\ticket\booking\model\JWTToken.class
 cinema\ticket\booking\repository\GenreReposity.class
@@ -97,6 +99,7 @@ cinema\ticket\booking\response\BookingResponse.class
 cinema\ticket\booking\response\MyApiResponse.class
 cinema\ticket\booking\exception\ApiException.class
 cinema\ticket\booking\exception\MyAccessDeniedException.class
+cinema\ticket\booking\service\MovieApiService.class
 cinema\ticket\booking\security\InputValidationFilter.class
 cinema\ticket\booking\controller\HomeController.class
 cinema\ticket\booking\response\ShowSeatResponse.class
@@ -117,11 +120,13 @@ cinema\ticket\booking\controller\BookingController.class
 cinema\ticket\booking\repository\MovieRepo.class
 cinema\ticket\booking\model\Movie.class
 cinema\ticket\booking\model\enumModel\UserStatus.class
+cinema\ticket\booking\config\MailConfig.class
 cinema\ticket\booking\exception\MyNotFoundException.class
 cinema\ticket\booking\model\enumModel\BookingStatus.class
 cinema\ticket\booking\service\UserService.class
 cinema\ticket\booking\response\AuthenJWTokenResponse.class
 cinema\ticket\booking\service\AuthenticationService.class
+cinema\ticket\booking\utils\MailSender.class
 cinema\ticket\booking\repository\BookingRepository.class
 cinema\ticket\booking\request\SignUpRequest.class
 cinema\ticket\booking\response\ShowInfoResponse.class
