@@ -106,11 +106,6 @@ public class AuthenticationController {
 				.body(new ErrorResponse("An error occurred during verification"));
 		}
 	}
-	@GetMapping("/hello")
-    public String hello() {
-		
-        return "Hello, World!";
-    }
 	
 	@GetMapping("/token")
 	@Operation(hidden = true)

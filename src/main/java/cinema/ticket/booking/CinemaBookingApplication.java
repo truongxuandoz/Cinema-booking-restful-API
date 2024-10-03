@@ -1,12 +1,27 @@
 package cinema.ticket.booking;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 // import org.springframework.context.annotation.Bean;
 // import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
+import cinema.ticket.booking.model.Account;
+import cinema.ticket.booking.model.CinemaHall;
+import cinema.ticket.booking.model.CinemaSeat;
+import cinema.ticket.booking.model.Role;
+import cinema.ticket.booking.model.enumModel.ERole;
+import cinema.ticket.booking.model.enumModel.ESeat;
+import cinema.ticket.booking.model.enumModel.UserStatus;
+import cinema.ticket.booking.repository.CinemaHallRepository;
+import cinema.ticket.booking.repository.CinemaSeatRepository;
+import cinema.ticket.booking.service.UserService;
 import cinema.ticket.booking.service.impl.EmailServiceImpl;
 
 // import java.util.List;
@@ -43,6 +58,10 @@ public class CinemaBookingApplication {
 		SpringApplication.run(CinemaBookingApplication.class, args);
 	}
 	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 	// @Autowired
 	// private PasswordEncoder passwordEncoder;
 

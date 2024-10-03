@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cinema.ticket.booking.model.Movie;
 import cinema.ticket.booking.response.MyApiResponse;
 import cinema.ticket.booking.response.MovieInfoResponse;
+import cinema.ticket.booking.service.MovieApiService;
 import cinema.ticket.booking.service.MovieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,6 +41,9 @@ public class MovieController {
 	@Autowired
 	private MovieService mService;
 
+	@Autowired
+	private MovieApiService movieApiService;
+
 	@GetMapping("/getall")
 	@Operation(summary = "Get All Movie Service", responses = {
 			@ApiResponse(responseCode = "200", description = "Movie's information.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MovieInfoResponse.class))),
@@ -59,6 +63,39 @@ public class MovieController {
 			@RequestParam(defaultValue = "50") @Valid Integer pageSize) {
 		return new ResponseEntity<List<MovieInfoResponse>>(mService.getMatchingName(key, pageNumber, pageSize),
 				HttpStatus.OK);
+	}
+
+	@GetMapping("/{type}/{id}")
+	@Operation(summary = "Get movie details from external API", responses = {
+			@ApiResponse(responseCode = "200", description = "Successfully retrieved movie details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+			@ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+	})
+	public ResponseEntity<?> getMovieDetails(@PathVariable String type, @PathVariable String id) {
+		try {
+			String movieDetails = movieApiService.getShowDetail(type, id);
+			return ResponseEntity.ok(movieDetails);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponse("Movie not found or error occurred: " + e.getMessage()));
+		}
+	}
+
+	@GetMapping("/searchAll")
+	@Operation(summary = "Search All Movie Service", responses = {
+			@ApiResponse(responseCode = "200", description = "Search all movie successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MovieInfoResponse.class))),
+			@ApiResponse(responseCode = "400", description = "Data containt illegal character.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+	})
+	public ResponseEntity<String> searchMovies(
+			@RequestParam String key,
+			@RequestParam(defaultValue = "1") Integer page,
+			@RequestParam(defaultValue = "20") Integer size) {
+		try {
+			String result = movieApiService.getAllMovies(key, page, size);
+			return ResponseEntity.ok(result);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error searching movies: " + e.getMessage());
+		}
 	}
 
 	@GetMapping("/{id}")

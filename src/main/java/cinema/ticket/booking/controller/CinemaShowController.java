@@ -40,8 +40,6 @@ public class CinemaShowController {
 	@Autowired
 	private CinemaShowService cinemaShowService;
 
-	// @Autowired
-	// private CinemaShowRepository cinemaShowRepository;
 
 	@GetMapping("/{show_id}")
 	@Operation(summary = "Show ID Service (User is required)", responses = {
